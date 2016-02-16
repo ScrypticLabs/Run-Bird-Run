@@ -1,0 +1,162 @@
+Use nodes rather than graphicContext2D
+Mirroring the background image is key to eternal movement (reflection)
+Timeline or Animation timer can be the main loop (one isn't better than the other as of now)
+
+//    public void move(Path path) {
+//        switch (path) {
+//            case RIGHT:
+//
+//                break;
+//            case LEFT:
+//                velocityX = Math.min(velocityX, 0);
+//                velocityX = Math.max(-MAX_A,velocityX-getAccel());
+//                break;
+//            default:
+//                velocityX = 0;
+//                break;
+//        }
+//    }
+
+ // 0-49 = index 0
+        // 50-99 = index 1
+        // 100-149 = index 2
+        // 150-199 = index 3
+        // 200-249 = index 4
+        // 250-299 = index 5
+        // 300-349 = index 6
+        // 350-400 = index 7
+
+
+
+        int mappedIndex = 0;                                    // the index of the row corresponding to the bird's x position
+        if (positionX <= 49)
+            mappedIndex = 0;
+        else if (positionX >= 50 && positionX <= 99)
+            mappedIndex = 1;
+        else if (positionX >= 100 && positionX <= 149)
+            mappedIndex = 2;
+        else if (positionX >= 150 && positionX <= 199)
+            mappedIndex = 3;
+        else if (positionX >= 200 && positionX <= 249)
+            mappedIndex = 4;
+        else if (positionX >= 250 && positionX <= 299)
+            mappedIndex = 5;
+        else if (positionX >= 300 && positionX <= 349)
+            mappedIndex = 6;
+        else if (positionX >= 350)
+            mappedIndex = 7;
+        for (int i = 0; i < NUM_OF_BOXES; i++) {
+            if (((i*40 <= positionX && (i+1)*40 > positionX)) || ((i+1)*40 == positionX && i == 7))
+                mappedIndex = i;
+        }
+
+        System.out.println(positionX+"--"+mappedIndex);
+
+
+
+
+//        System.out.println(col);
+
+//        for (int i = 0; i < NUM_OF_BOXES; i++) {
+//        for (int row : boxes[col]) {
+//            System.out.print(row+" ");
+//        }
+//            if (boxes[col][i] == 1) {
+//                double boxPositionX = i * 50;
+//                if (positionX > boxPositionX) {             // right of box
+//                    lowerBoundX = boxPositionX;
+//                    System.out.println("Right of hazard");
+//                    break;
+//                } else if (positionX < boxPositionX) {      // left of box
+//                    upperBoundX = boxPositionX;
+//                    System.out.println("Left of hazard");
+//                    break;
+//                }
+//            }
+//        }
+
+
+
+//            if (box == 1) {
+//                if (boxPositionX-50 <= positionX-50-4 && positionX-50-4 <= boxPositionX) {
+//                    System.out.print("COLLIDE");
+//                    lowerBoundX = boxPositionX + 50;
+//                } else if (boxPositionX-50 <= positionX+4 && positionX+4 <= boxPositionX) {
+//                    upperBoundX = boxPositionX-50;
+//                else
+//                    upperBoundX = 400 ; lowerBoundX = -20;
+////                    System.out.println("COLLIDE!");
+//                // if the box is present
+////                idealBoxPosX = Math.abs(boxPositionX-positionX) < idealBoxPosX ? Math.abs(boxPositionX-positionX) : idealBoxPosX;
+//
+////                double dx = positionX-boxPositionX;                        // assuming pX is > bPx
+////                if (dx >= 0)
+////                    lowerBoundX = boxPositionX;
+////                else if (dx <= 0)
+////                    upperBoundX = boxPositionX;
+////                if (path == Path.LEFT) {
+////                    if (positionX > boxPositionX-50)
+////                        lowerBoundX = boxPositionX;
+////                } else if (path == Path.RIGHT) {
+////                    if (positionX < boxPositionX)
+////                        upperBoundX = boxPositionX;
+////                }
+//           }
+
+//    public void translateBoxesY(ObservableList<Node> children, int n, double time) {
+//        for (Box box : totalBoxes) {
+//            box.setSTOP(box.getSTOP()+n);
+//            box.setPosition(box.getX(),box.getY()+(n-1));
+//            box.update(time);
+//            box.render(children);
+////            if (children.contains(box.getImageView())) {
+////                System.out.println("changing");
+////                children.remove(box.getImageView());
+////                children.add(box.getImageView());
+////            }
+//        }
+//    }
+//
+//    public void translateInternalMap() {
+//        int[][] temp = screen.clone();
+////        outputScreen();
+//        screen[0] = new int[NUM_OF_BOXES];
+//        for (int i = 0; i < NUM_OF_BOXES - 1; i++) {
+//            screen[i+1] = temp[i];
+//        }
+////        outputScreen();
+//    }
+
+ // BELOW NOT WORKING
+//                        if (fedEx.getStackMinHeight() == maxHeightBeforeTransition) {
+////                            ObservableList<Node> children = root.getChildren();
+//                            screenX += 50;
+//                            fedEx.translateBoxesY(root.getChildren(),screenX,t);
+//                            maxHeightBeforeTransition += 1;
+////                            for (int i = 0; i < children.size(); i++) {
+////                                children.get(i).setLayoutY(50);
+////                            }
+//                        }
+
+
+        // display flags until time is reached
+        if (warningTime <= MAX_WARNING_TIME) {
+            if (warningTime == 0) warningInit = true;
+            if (warningInit) {
+                for (int i = 0; i < NUM_OF_BOXES; i++) {
+                    if (warningSignsRequired[i] == 1) {
+                        warningSigns[i].setY(0-offset);
+                        warningSigns[i].render(children);
+                    } else {
+                        warningSigns[i].hide(children);
+                    }
+                    warningTime++;
+                }
+            } return true;
+            // when flags have been displayed for this time
+        } else {
+            for (WarningSign sign : warningSigns) {
+                sign.hide(children);
+            }
+            return false;
+        }
